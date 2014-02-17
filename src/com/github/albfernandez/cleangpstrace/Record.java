@@ -29,6 +29,8 @@ public class Record {
 	
 	private static Record createGPGGARecord(String line) {
 		Record record = new Record(line);
+		String[] rec = line.split(",");
+		record.timeAsString = rec[1];
 		return record;
 		/*
 		GGA - essential fix data which provide 3D location and accuracy data.
