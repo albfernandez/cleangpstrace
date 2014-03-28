@@ -39,7 +39,7 @@ public class Main {
 			trace = remove.cleanTrace(trace);
 		}
 		
-		List<Trace> traces = TraceFilters.splitTrace(trace, 5);
+		List<Trace> traces = TraceFilters.splitTrace(trace, 10);
 		List<Trace> traces2 = new ArrayList<Trace>();
 		if (!line.hasOption("skip-simplify")) {
 			for (Trace iTrace: traces) {
