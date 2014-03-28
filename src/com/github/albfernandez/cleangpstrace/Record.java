@@ -1,5 +1,8 @@
 package com.github.albfernandez.cleangpstrace;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class Record {
@@ -7,12 +10,26 @@ public class Record {
 
 	private String[] data = null;
 	private String timeAsString;
+	private double lat;
+	private double lon;
+	private NMEAFixQuality fixQuality;
+	private int satellites;
+	private double altitude;
+	private double speedInKnots;
+	private double trackAngle;
+	private String dateAsString;
+	private long time = -1;
+	private static SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy HHmmss");
+	
 	private Record(String data){
 		super();
 		this.data = new String[]{data};
 	}
 	public static Record createRecord (String line) {
 		if (StringUtils.isBlank(line)){
+			return null;
+		}
+		if (!line.startsWith("$GP")){
 			return null;
 		}
 		if (!NMEAChecksum.isValidCheckSum(line)){
@@ -26,11 +43,19 @@ public class Record {
 		}
 		return null;
 	}
-	
+
 	private static Record createGPGGARecord(String line) {
 		Record record = new Record(line);
 		String[] rec = line.split(",");
 		record.timeAsString = rec[1];
+		record.lat = NMEAParser.parseNmeaPosition(rec[2], rec[3]);
+		record.lon = NMEAParser.parseNmeaPosition(rec[4], rec[5]);
+		record.fixQuality = NMEAFixQuality.fromCode(rec[6]);
+		record.satellites = Integer.parseInt(rec[7]);
+		//hdp rec-8   - rec-9
+		record.altitude = Double.parseDouble(rec[9]);
+		// rec-11 unidades
+		// rec-12 y rec13 Height of geoid (mean sea level) above WGS84 ellipsoid
 		return record;
 		/*
 		GGA - essential fix data which provide 3D location and accuracy data.
@@ -63,8 +88,16 @@ public class Record {
 
 	}
 	private static Record createGPRMCRecord(String line) {
-		// TODO Auto-generated method stub
 		Record record = new Record(line);
+		String[] rec = line.split(",");
+		record.timeAsString = rec[1];
+		record.lat = NMEAParser.parseNmeaPosition(rec[3], rec[4]);
+		record.lon = NMEAParser.parseNmeaPosition(rec[5], rec[6]);
+		record.speedInKnots = Double.parseDouble(rec[7]);
+		record.trackAngle = Double.parseDouble(rec[8]);
+		record.dateAsString = rec[9];
+		//hpos rec-8   - rec-9
+		
 		return record;
 		
 		/*
@@ -87,8 +120,107 @@ public class Record {
 
 	}
 	public Object getTimeAsString() {
-		return timeAsString;
+		return this.timeAsString;
 	}
+	public NMEAFixQuality getFixQuality() {
+		return this.fixQuality;
+	}
+	public int getSatellites(){
+		return this.satellites;
+	}
+	public double getLat() {
+		return lat;
+	}
+	public double getLon() {
+		return lon;
+	}
+	public String[] getData() {
+		return data;
+	}
+	public double getAltitude() {
+		return altitude;
+	}
+	public double getSpeedInKnots() {
+		return speedInKnots;
+	}
+	public double getTrackAngle() {
+		return trackAngle;
+	}
+	public String getDateAsString() {
+		return dateAsString;
+	}
+	public String toNMEAString() {
+		StringBuilder sb = new StringBuilder();
+		for (String d : data) {
+			sb.append(d).append("\n");
+		}
+		return sb.toString();
+	}
+	public boolean isRMC(){
+		return data != null && data.length == 1 && data[0].startsWith("$GPRMC");
+	}
+	public boolean isGGA () {
+		return data != null && data.length == 1 && data[0].startsWith("$GPGGA");
+	}
+	
+	public void setDateAsString(String date) {
+		this.dateAsString = date;
+		this.time = -1;
+	}
+
+	public long getTime() {
+		if (time < 0){
+			calculateTime();
+		}
+		return time;
+	}
+
+	private void calculateTime() {
+		try {
+			this.time = sdf.parse(this.dateAsString + " " + this.timeAsString).getTime();
+		} catch (ParseException e) {
+			this.time=0;
+		}
+		
+	}
+	public void join(Record r) {
+		if (this.isGGA() && r.isRMC()){
+			joinRMC(r);
+		}
+		else if (this.isRMC() && r.isGGA()){
+			joinGGA(r);
+		}
+		
+	}
+	
+
+	private void joinRMC(Record r) {
+		if (this.isGGA() && r.isRMC()){
+			String oldData = data[0];
+			data = new String[2];
+			data[0] = oldData;
+			data[1] = r.data[0]; 
+			this.dateAsString = r.dateAsString;
+			this.speedInKnots = r.speedInKnots;
+			this.trackAngle = r.trackAngle;			
+		}
+		
+	}
+	private void joinGGA(Record r) {
+		if (this.isRMC() && r.isGGA()){
+			String oldData = data[0];
+			data = new String[2];
+			data[0] = oldData;
+			data[1] = r.data[0];
+			this.lat = r.lat;
+			this.lon = r.lon;
+			this.fixQuality = r.fixQuality;
+			this.satellites = r.satellites;
+			this.altitude = r.altitude;
+		}
+		
+	}
+	
 	
 }
 

@@ -20,7 +20,10 @@ public class RecordTest {
 	}
 	@Test
 	public void testDateTime () {
-		Assert.assertEquals("123519", Record.createRecord(TEST_GPGGA_1).getTimeAsString());
+		Record record = Record.createRecord(TEST_GPGGA_1);
+		Assert.assertEquals("123519", record.getTimeAsString());
+		Assert.assertTrue(NMEAFixQuality.GPS_FIX == record.getFixQuality());
+		//Assert.assertEquals(expected, actual);
 	}
 	
 
