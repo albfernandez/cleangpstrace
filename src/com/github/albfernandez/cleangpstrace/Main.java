@@ -72,7 +72,9 @@ public class Main {
 	@SuppressWarnings("static-access")
 	private static Options createOptions () {
 		Options options = new Options();
-		options.addOption(new Option( "skip-simplify", "Skip simplification of traces" ));
+		options.addOption(
+				OptionBuilder.withLongOpt("skip-simplify")
+				.withDescription("Skip simplification of traces" ).create());
 		options.addOption(OptionBuilder.withLongOpt( "exclude-areas" )
                 .withDescription( "use FILE (shapefile) to exclude areas" )
                 .hasArg()
