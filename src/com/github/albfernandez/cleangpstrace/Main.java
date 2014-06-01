@@ -20,14 +20,16 @@ public class Main {
 
 	public static void main(String[] args) throws ParseException, IOException {
 		Options options = createOptions();
-		// TODO Auto-generated method stub
+		
 		CommandLineParser parser = new GnuParser();
 		CommandLine line = parser.parse(options, args);
 		String excludeAreas = line.getOptionValue("exclude-areas");
 		String prefix = StringUtils.defaultString(line.getOptionValue("prefix"), "s");
 		String outputDir = StringUtils.defaultString(line.getOptionValue("output-dir"), ".");
+		String secondsToSplitParam = StringUtils.defaultString(line.getOptionValue("seconds-to-split"), "10");
 		String inputFile = line.getArgs()[0];
-		//System.out.println("excludeAreas="+excludeAreas);
+		boolean skipSimplify = line.hasOption("skip-simplify");		
+		int secondsToSplit = Integer.parseInt(secondsToSplitParam);
 		
 		
 		
@@ -38,15 +40,15 @@ public class Main {
 			trace = remove.cleanTrace(trace);
 		}
 		
-		List<Trace> traces = TraceFilters.splitTrace(trace, 10);
+		List<Trace> traces = TraceFilters.splitTrace(trace, secondsToSplit);
 		List<Trace> traces2 = new ArrayList<Trace>();
-		if (!line.hasOption("skip-simplify")) {
-			for (Trace iTrace: traces) {
-				traces2.add(TraceFilters.simplify(iTrace));
-			}
+		if (skipSimplify) {
+			traces2.addAll(traces);
 		}
 		else {
-			traces2.addAll(traces);
+			for (Trace iTrace: traces) {
+				traces2.add(TraceFilters.simplify(iTrace));
+			}			
 		}
 		store(traces2, new File(outputDir), prefix);
 		System.out.println("Done");
@@ -89,6 +91,11 @@ public class Main {
                 .hasArg()
                 .withArgName("PREFIX")
                 .create() );
+		options.addOption(OptionBuilder.withLongOpt("seconds-to-split")
+				.withDescription(" split traces after SECONDS without valid data")
+				.hasArg()
+				.withArgName("SECONDS")
+				.create());
 		return options;
 	}
 
