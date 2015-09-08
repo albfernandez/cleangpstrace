@@ -1,4 +1,4 @@
 cleangpstrace
 =============
 
-Clear and simplify gps trace
+Clean and simplify gps trace
