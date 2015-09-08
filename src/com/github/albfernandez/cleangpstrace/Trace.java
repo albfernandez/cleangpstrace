@@ -53,7 +53,7 @@ public class Trace {
 	private void removeUnorderedPoints() {
 		List<Record> newRecords = new ArrayList<>();
 		long lastTime = 0;
-		for (Record r : records){
+		for (Record r : this.records){
 			long recordTime = r.getTime();
 			if (recordTime > lastTime) {
 				lastTime = recordTime;
@@ -65,7 +65,7 @@ public class Trace {
 	}
 	private void joinRecords() {
 		List<Record> newRecords = new ArrayList<>();		
-		for (Record r : records) {
+		for (Record r : this.records) {
 			if (r.isGGA() || r.isRMC()){
 				if (!newRecords.isEmpty()){
 					Record last = newRecords.get(newRecords.size()-1);
@@ -105,16 +105,16 @@ public class Trace {
 		}
 	}
 	public List<Record> getRecords() {
-		return records;
+		return this.records;
 	}
 	public void setRecords(List<Record> records) {
 		this.records = records;
 	}
 	public String getTimestampAsString() {
-		if (records.isEmpty()){
+		if (this.records.isEmpty()){
 			return "";
 		}
-		long time = records.get(0).getTime();
+		long time = this.records.get(0).getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		return sdf.format(new Date(time));
 

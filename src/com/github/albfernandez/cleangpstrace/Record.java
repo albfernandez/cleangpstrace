@@ -129,38 +129,38 @@ public class Record {
 		return this.satellites;
 	}
 	public double getLat() {
-		return lat;
+		return this.lat;
 	}
 	public double getLon() {
-		return lon;
+		return this.lon;
 	}
 	public String[] getData() {
-		return data;
+		return this.data;
 	}
 	public double getAltitude() {
-		return altitude;
+		return this.altitude;
 	}
 	public double getSpeedInKnots() {
-		return speedInKnots;
+		return this.speedInKnots;
 	}
 	public double getTrackAngle() {
-		return trackAngle;
+		return this.trackAngle;
 	}
 	public String getDateAsString() {
-		return dateAsString;
+		return this.dateAsString;
 	}
 	public String toNMEAString() {
 		StringBuilder sb = new StringBuilder();
-		for (String d : data) {
+		for (String d : this.data) {
 			sb.append(d).append("\n");
 		}
 		return sb.toString();
 	}
 	public boolean isRMC(){
-		return data != null && data.length == 1 && data[0].startsWith("$GPRMC");
+		return this.data != null && this.data.length == 1 && this.data[0].startsWith("$GPRMC");
 	}
 	public boolean isGGA () {
-		return data != null && data.length == 1 && data[0].startsWith("$GPGGA");
+		return this.data != null && this.data.length == 1 && this.data[0].startsWith("$GPGGA");
 	}
 	
 	public void setDateAsString(String date) {
@@ -169,10 +169,10 @@ public class Record {
 	}
 
 	public long getTime() {
-		if (time < 0){
+		if (this.time < 0){
 			calculateTime();
 		}
-		return time;
+		return this.time;
 	}
 
 	private void calculateTime() {
@@ -196,10 +196,10 @@ public class Record {
 
 	private void joinRMC(Record r) {
 		if (this.isGGA() && r.isRMC()){
-			String oldData = data[0];
-			data = new String[2];
-			data[0] = oldData;
-			data[1] = r.data[0]; 
+			String oldData = this.data[0];
+			this.data = new String[2];
+			this.data[0] = oldData;
+			this.data[1] = r.data[0]; 
 			this.dateAsString = r.dateAsString;
 			this.speedInKnots = r.speedInKnots;
 			this.trackAngle = r.trackAngle;			
@@ -208,10 +208,10 @@ public class Record {
 	}
 	private void joinGGA(Record r) {
 		if (this.isRMC() && r.isGGA()){
-			String oldData = data[0];
-			data = new String[2];
-			data[0] = oldData;
-			data[1] = r.data[0];
+			String oldData = this.data[0];
+			this.data = new String[2];
+			this.data[0] = oldData;
+			this.data[1] = r.data[0];
 			this.lat = r.lat;
 			this.lon = r.lon;
 			this.fixQuality = r.fixQuality;

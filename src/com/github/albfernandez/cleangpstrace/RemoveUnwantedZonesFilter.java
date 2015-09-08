@@ -33,11 +33,11 @@ public class RemoveUnwantedZonesFilter {
     
     private void initDataStore() {
     	try {
-            store = FileDataStoreFinder.getDataStore(new File(cleanZones));            
-            featureSource = store.getFeatureSource();
-            filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints()); 
-            geometryPropertyName = featureSource.getSchema().getGeometryDescriptor().getLocalName();
-            targetCRS = featureSource.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
+            this.store = FileDataStoreFinder.getDataStore(new File(this.cleanZones));            
+            this.featureSource = this.store.getFeatureSource();
+            this.filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints()); 
+            this.geometryPropertyName = this.featureSource.getSchema().getGeometryDescriptor().getLocalName();
+            this.targetCRS = this.featureSource.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -68,10 +68,10 @@ public class RemoveUnwantedZonesFilter {
 		try {
 
 			ReferencedEnvelope bbox = new ReferencedEnvelope(longitud,
-					longitud + 0.00001, latitud, latitud + 0.00001, targetCRS);
-			Filter filter = filterFactory.bbox(
-					filterFactory.property(geometryPropertyName), bbox);
-			SimpleFeatureCollection lista = featureSource.getFeatures(filter);
+					longitud + 0.00001, latitud, latitud + 0.00001, this.targetCRS);
+			Filter filter = this.filterFactory.bbox(
+					this.filterFactory.property(this.geometryPropertyName), bbox);
+			SimpleFeatureCollection lista = this.featureSource.getFeatures(filter);
 			return lista.size();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,7 +83,7 @@ public class RemoveUnwantedZonesFilter {
 
     
     public void dispose(){
-        store.dispose();
+        this.store.dispose();
     }
 
 
