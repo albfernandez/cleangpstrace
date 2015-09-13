@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cleangpstrace</groupId>
 	<artifactId>cleangpstrace</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>cleangpstrace</name>
 	<description>cleangpstrace</description>
 	<url>https://github.com/albfernandez/cleangpstrace</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<geotools.version>10.4</geotools.version>
+		<geotools.version>13.2</geotools.version>
 	</properties>
 	
 	<scm>
@@ -41,14 +41,9 @@
 			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-swing</artifactId>
-			<version>${geotools.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.2.1</version>
+			<version>3.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
