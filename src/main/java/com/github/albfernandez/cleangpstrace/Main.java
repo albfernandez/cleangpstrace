@@ -19,9 +19,9 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +78,7 @@ public final class Main {
 	private static void store(final List<Trace> traces2, final File file, final String prefix) throws FileNotFoundException, IOException {
 		for (Trace trace: traces2) {
 			File outputFile = new File(file, prefix + trace.getTimestampAsString() + ".txt");
-			try (PrintStream ps = new PrintStream(new FileOutputStream(outputFile))){
+			try (PrintStream ps = new PrintStream(outputFile, StandardCharsets.US_ASCII.displayName())){
 				System.out.println("Writing " + outputFile.getName() + " ...");
 				for (Record r: trace.getRecords()){
 					for (String line: r.getData()){

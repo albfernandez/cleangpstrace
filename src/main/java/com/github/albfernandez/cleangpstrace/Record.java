@@ -19,6 +19,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,7 +37,7 @@ public final class Record {
 	private double trackAngle;
 	private String dateAsString;
 	private long time = -1;
-	private static SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy HHmmss");
+	private SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy HHmmss");
 	
 	private Record(final String data){
 		super();
@@ -152,7 +153,7 @@ public final class Record {
 		return this.lon;
 	}
 	public String[] getData() {
-		return this.data;
+		return Arrays.copyOf(this.data, this.data.length);
 	}
 	public double getAltitude() {
 		return this.altitude;
@@ -194,7 +195,7 @@ public final class Record {
 
 	private void calculateTime() {
 		try {
-			this.time = sdf.parse(this.dateAsString + " " + this.timeAsString).getTime();
+			this.time = this.sdf.parse(this.dateAsString + " " + this.timeAsString).getTime();
 		} catch (ParseException e) {
 			this.time=0;
 		}
