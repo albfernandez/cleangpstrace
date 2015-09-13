@@ -20,22 +20,22 @@ package com.github.albfernandez.cleangpstrace;
  */
 public final class IgnoreLineException extends Exception {
 
-	private static final long serialVersionUID = 9166222770371847804L;
+    private static final long serialVersionUID = 9166222770371847804L;
 
-	public IgnoreLineException() {
-		super();
-	}
+    public IgnoreLineException() {
+        super();
+    }
 
-	public IgnoreLineException(String message) {
-		super(message);
-	}
+    public IgnoreLineException(final String message) {
+        super(message);
+    }
 
-	public IgnoreLineException(Throwable cause) {
-		super(cause);
-	}
+    public IgnoreLineException(final Throwable cause) {
+        super(cause);
+    }
 
-	public IgnoreLineException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public IgnoreLineException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
 }
