@@ -30,19 +30,19 @@ public enum NMEAFixQuality {
 	SIMULATION_MODE(8);
 	
 	private int code = 0;
-	private NMEAFixQuality(int code) {
+	private NMEAFixQuality(final int code) {
 		this.code = code;
 	}
 	public int getCode() {
 		return this.code;
 	}
-	public static NMEAFixQuality fromCode(String code) {
+	public static NMEAFixQuality fromCode(final String code) {
 		if (code == null || !code.matches("^[0-9]+$")){
 			return null;
 		}
 		return fromCode(Integer.parseInt(code));
 	}
-	public static NMEAFixQuality fromCode(int code) {
+	public static NMEAFixQuality fromCode(final int code) {
 		for (NMEAFixQuality quality: NMEAFixQuality.values()){
 			if (quality.getCode() == code){
 				return quality;

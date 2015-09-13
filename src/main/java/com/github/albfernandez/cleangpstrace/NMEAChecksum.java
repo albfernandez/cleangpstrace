@@ -17,8 +17,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
-public class NMEAChecksum {
+public final class NMEAChecksum {
 	
+	private NMEAChecksum() {
+		throw new AssertionError("No instances of this class are allowed");
+	}
 	public static boolean isValidCheckSum(String line) {
 		if ('*' != line.charAt(line.length() -3)){
 			return false;
@@ -33,7 +36,6 @@ public class NMEAChecksum {
 		for(char c: checkString.toCharArray()) {
 			value ^= c;
 		}
-		// TODO Auto-generated method stub
 		return toHexString(value);
 	}
 	public static String toHexString(char c) {

@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Record {
+public final class Record {
 	
 
 	private String[] data = null;
@@ -38,11 +38,11 @@ public class Record {
 	private long time = -1;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy HHmmss");
 	
-	private Record(String data){
+	private Record(final String data){
 		super();
 		this.data = new String[]{data};
 	}
-	public static Record createRecord (String line) {
+	public static Record createRecord (final String line) {
 		if (StringUtils.isBlank(line)){
 			return null;
 		}
@@ -61,7 +61,7 @@ public class Record {
 		return null;
 	}
 
-	private static Record createGPGGARecord(String line) {
+	private static Record createGPGGARecord(final String line) {
 		Record record = new Record(line);
 		String[] rec = line.split(",");
 		record.timeAsString = rec[1];
@@ -104,7 +104,7 @@ public class Record {
 		*/
 
 	}
-	private static Record createGPRMCRecord(String line) {
+	private static Record createGPRMCRecord(final String line) {
 		Record record = new Record(line);
 		String[] rec = line.split(",");
 		record.timeAsString = rec[1];
@@ -200,7 +200,7 @@ public class Record {
 		}
 		
 	}
-	public void join(Record r) {
+	public void join(final Record r) {
 		if (this.isGGA() && r.isRMC()){
 			joinRMC(r);
 		}
@@ -211,7 +211,7 @@ public class Record {
 	}
 	
 
-	private void joinRMC(Record r) {
+	private void joinRMC(final Record r) {
 		if (this.isGGA() && r.isRMC()){
 			String oldData = this.data[0];
 			this.data = new String[2];
@@ -223,7 +223,7 @@ public class Record {
 		}
 		
 	}
-	private void joinGGA(Record r) {
+	private void joinGGA(final Record r) {
 		if (this.isRMC() && r.isGGA()){
 			String oldData = this.data[0];
 			this.data = new String[2];

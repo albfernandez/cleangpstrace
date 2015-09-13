@@ -32,12 +32,12 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Trace {
+public final class Trace {
 	private List<Record> records = new ArrayList<>();
 	public Trace() {
 		super();
 	}
-	public static Trace load(File file) throws IOException {
+	public static Trace load(final File file) throws IOException {
 		if (file.getName().toLowerCase().endsWith(".gz")){
 			try (InputStream is = new GZIPInputStream(new FileInputStream(file))){
 				return load(is);
@@ -47,12 +47,12 @@ public class Trace {
 			return load(is);
 		}
 	}
-	public static Trace load(InputStream is) throws IOException {
+	public static Trace load(final InputStream is) throws IOException {
 		try (Reader reader = new InputStreamReader(is)){
 			return load(reader);
 		}
 	}
-	public static Trace load(Reader reader1) throws IOException {
+	public static Trace load(final Reader reader1) throws IOException {
 		Trace trace = new Trace();
 		try (BufferedReader reader = new BufferedReader(reader1)){
 			String line = null;
@@ -116,7 +116,7 @@ public class Trace {
 	
 	
 	
-	public void addRecord(Record r){
+	public void addRecord(final Record r){
 		if (r != null) {
 			this.records.add(r);
 		}
@@ -124,7 +124,7 @@ public class Trace {
 	public List<Record> getRecords() {
 		return this.records;
 	}
-	public void setRecords(List<Record> records) {
+	public void setRecords(final List<Record> records) {
 		this.records = records;
 	}
 	public String getTimestampAsString() {

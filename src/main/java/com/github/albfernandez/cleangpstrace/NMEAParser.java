@@ -20,7 +20,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 public final class NMEAParser {
 
 	private NMEAParser() {
-		throw new AssertionError("");
+		throw new AssertionError("No instances of this class are allowed");
 	}
 	public static double parseNmeaPosition(String pos, String dir) {
 		// 4227.201334

@@ -20,13 +20,12 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 import java.util.ArrayList;
 import java.util.List;
 
-public class TraceFilters {
+public final class TraceFilters {
 	
-	public static Trace removeUnwantedZones(Trace trace){
-		
+	public static Trace removeUnwantedZones(final Trace trace){
 		return trace;
 	}
-	public static List<Trace> splitTrace(Trace trace, int secondsToSplit){
+	public static List<Trace> splitTrace(final Trace trace, final int secondsToSplit){
 		List<Trace> list = new ArrayList<>();
 		long millisToSplit = secondsToSplit * 1000;
 		long lastTime = 0;
@@ -42,10 +41,10 @@ public class TraceFilters {
 		
 		return list;
 	}
-	public static Trace simplify(Trace trace) {
+	public static Trace simplify(final Trace trace) {
 		return simplify (trace, 1);
 	}
-	public static Trace simplify(Trace trace, double margin){
+	public static Trace simplify(final Trace trace, final double margin){
 		Trace newTrace = new Trace();
 		double lastDirection = 1000;
 		

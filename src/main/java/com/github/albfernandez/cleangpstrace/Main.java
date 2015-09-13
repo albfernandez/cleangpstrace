@@ -33,9 +33,13 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
-public class Main {
+public final class Main {
 
-	public static void main(String[] args) throws ParseException, IOException {
+	private Main() {
+		throw new AssertionError("No instances of this class are allowed");
+	}
+	
+	public static void main(final String[] args) throws ParseException, IOException {
 		Options options = createOptions();
 		
 		CommandLineParser parser = new GnuParser();
@@ -71,7 +75,7 @@ public class Main {
 		System.out.println("Done");
 	}
 	
-	private static void store(List<Trace> traces2, File file, String prefix) throws FileNotFoundException, IOException {
+	private static void store(final List<Trace> traces2, final File file, final String prefix) throws FileNotFoundException, IOException {
 		for (Trace trace: traces2) {
 			File outputFile = new File(file, prefix + trace.getTimestampAsString() + ".txt");
 			try (PrintStream ps = new PrintStream(new FileOutputStream(outputFile))){

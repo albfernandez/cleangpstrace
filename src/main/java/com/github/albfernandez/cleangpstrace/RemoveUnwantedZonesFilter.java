@@ -31,7 +31,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-public class RemoveUnwantedZonesFilter {
+public final class RemoveUnwantedZonesFilter {
         
     private FileDataStore store;
     private SimpleFeatureSource featureSource;
@@ -41,7 +41,7 @@ public class RemoveUnwantedZonesFilter {
     //"/home/alberto/uDigWorkspace/zonas_limpia.shp"
     private String cleanZones;
     
-    public RemoveUnwantedZonesFilter(String cleanZones) {
+    public RemoveUnwantedZonesFilter(final String cleanZones) {
     	this.cleanZones = cleanZones;
     	initDataStore();
     }
@@ -63,7 +63,7 @@ public class RemoveUnwantedZonesFilter {
     
 
     
-    public Trace cleanTrace (Trace trace) {
+    public Trace cleanTrace (final Trace trace) {
     	Trace newTrace = new Trace();
     	for(Record record: trace.getRecords()){
     		if (isValidRecord(record)){
@@ -74,14 +74,14 @@ public class RemoveUnwantedZonesFilter {
     }
     
 
-	private boolean isValidRecord(Record record) {
+	private boolean isValidRecord(final Record record) {
     	return cuentaIncidencias(record.getLat(), record.getLon()) == 0;
 	}
 
 
 
 
-	private long cuentaIncidencias(double latitud, double longitud) {
+	private long cuentaIncidencias(final double latitud, final double longitud) {
 		try {
 
 			ReferencedEnvelope bbox = new ReferencedEnvelope(longitud,
