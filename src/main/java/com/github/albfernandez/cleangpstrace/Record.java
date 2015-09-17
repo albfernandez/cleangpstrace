@@ -63,18 +63,23 @@ public final class Record {
     }
 
     private static Record createGPGGARecord(final String line) {
-        Record record = new Record(line);
-        String[] rec = line.split(",");
-        record.timeAsString = rec[1];
-        record.lat = NMEAParser.parseNmeaPosition(rec[2], rec[3]);
-        record.lon = NMEAParser.parseNmeaPosition(rec[4], rec[5]);
-        record.fixQuality = NMEAFixQuality.fromCode(rec[6]);
-        record.satellites = Integer.parseInt(rec[7]);
-        // hdp rec-8 - rec-9
-        record.altitude = Double.parseDouble(rec[9]);
-        // rec-11 unidades
-        // rec-12 y rec13 Height of geoid (mean sea level) above WGS84 ellipsoid
-        return record;
+        try {
+            Record record = new Record(line);
+            String[] rec = line.split(",");
+            record.timeAsString = rec[1];
+            record.lat = NMEAParser.parseNmeaPosition(rec[2], rec[3]);
+            record.lon = NMEAParser.parseNmeaPosition(rec[4], rec[5]);
+            record.fixQuality = NMEAFixQuality.fromCode(rec[6]);
+            record.satellites = Integer.parseInt(rec[7]);
+            // hdp rec-8 - rec-9
+            record.altitude = Double.parseDouble(rec[9]);
+            // rec-11 unidades
+            // rec-12 y rec13 Height of geoid (mean sea level) above WGS84 ellipsoid
+            return record;
+        }
+        catch (Exception e) {
+            return null;
+        }
         /*
          * GGA - essential fix data which provide 3D location and accuracy data.
          *
@@ -96,17 +101,22 @@ public final class Record {
     }
 
     private static Record createGPRMCRecord(final String line) {
-        Record record = new Record(line);
-        String[] rec = line.split(",");
-        record.timeAsString = rec[1];
-        record.lat = NMEAParser.parseNmeaPosition(rec[3], rec[4]);
-        record.lon = NMEAParser.parseNmeaPosition(rec[5], rec[6]);
-        record.speedInKnots = Double.parseDouble(rec[7]);
-        record.trackAngle = Double.parseDouble(rec[8]);
-        record.dateAsString = rec[9];
-        // hpos rec-8 - rec-9
-
-        return record;
+        try {
+            Record record = new Record(line);
+            String[] rec = line.split(",");
+            record.timeAsString = rec[1];
+            record.lat = NMEAParser.parseNmeaPosition(rec[3], rec[4]);
+            record.lon = NMEAParser.parseNmeaPosition(rec[5], rec[6]);
+            record.speedInKnots = Double.parseDouble(rec[7]);
+            record.trackAngle = Double.parseDouble(rec[8]);
+            record.dateAsString = rec[9];
+            // hpos rec-8 - rec-9
+    
+            return record;
+        }
+        catch (Exception e) {
+            return null;
+        }
 
         /*
          * RMC - NMEA has its own version of essential gps pvt (position,
