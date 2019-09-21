@@ -25,10 +25,15 @@ public class WeekNumberRolloverTimeConverter implements TimeConverter {
                   simple.parse("1999-07-21 23:59:47").getTime(), // strange, but gpsbabel seems to use that
                   simple.parse("2019-04-06 23:59:42").getTime(),
                   simple.parse("2039-04-06 23:59:42").getTime()
-            };
+            };            
         } 
-        catch (ParseException pe) {
-            
+        catch (ParseException ignore) {
+            limits = new long[] {
+                    315961200000L,
+                    932594387000L,
+                    1554587982000L,
+                    2185739982000L
+            };
         }
     }
 
@@ -61,13 +66,9 @@ public class WeekNumberRolloverTimeConverter implements TimeConverter {
     
     @Override
     public long convertTime(String date) {
-        
-        
         try {
             Date d = sdf.parse(date);
             return convertTime(d, this.epoch);
-            
-            
         } catch (ParseException e) {
             return 0;
         }

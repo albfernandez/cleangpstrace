@@ -36,7 +36,7 @@ public enum NMEAFixQuality {
 
     private int code = 0;
 
-    private NMEAFixQuality(final int theCode) {
+    NMEAFixQuality(final int theCode) {
         this.code = theCode;
     }
 

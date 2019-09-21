@@ -59,7 +59,10 @@ public final class TraceFilters {
 
         for (Record r : trace.getRecords()) {
             BigDecimal angle = r.getTrackAngle();
-            double n = (angle == null ? 0.0 : angle.doubleValue());
+            double n = 0.0;
+            if (angle != null) {
+                n = angle.doubleValue();
+            }
             double diff = Math.abs(n - lastDirection);
             if (diff > margin) {
                 lastDirection = n;
