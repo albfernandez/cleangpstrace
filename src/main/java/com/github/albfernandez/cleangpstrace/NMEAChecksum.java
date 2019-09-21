@@ -31,7 +31,7 @@ public final class NMEAChecksum {
         String checksum = line.substring(line.length() - 2);
         String checkString = line.substring(1, line.length() - 3);
         String calculated = calculateCheckSum(checkString);
-        return calculated.equals(checksum);
+        return calculated.equalsIgnoreCase(checksum);
     }
 
     public static String calculateCheckSum(final String checkString) {
@@ -47,6 +47,6 @@ public final class NMEAChecksum {
         if (tmp.length() < 2) {
             tmp = "0" + tmp;
         }
-        return tmp;
+        return tmp.toUpperCase();
     }
 }

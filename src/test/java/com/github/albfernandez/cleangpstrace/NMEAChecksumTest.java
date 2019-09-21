@@ -31,7 +31,8 @@ public class NMEAChecksumTest {
 	
 	@Test
 	public void testValidChecksum () {
-		Assert.assertTrue(NMEAChecksum.isValidCheckSum("$GPRMC,092751.000,A,5321.6802,N,00630.3371,W,0.06,31.66,280511,,,A*45"));
+	    Assert.assertTrue(NMEAChecksum.isValidCheckSum("$GPRMC,092751.000,A,5321.6802,N,00630.3371,W,0.06,31.66,280511,,,A*45"));
+	    Assert.assertTrue(NMEAChecksum.isValidCheckSum("$GPRMC,081329,V,4221.870,N,00457.240,W,4.86,337.14,150719,,*10"));
 	}
 	@Test
 	public void testInvalidChecksum () {

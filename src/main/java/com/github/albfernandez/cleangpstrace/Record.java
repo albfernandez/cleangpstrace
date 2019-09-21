@@ -1,26 +1,8 @@
 package com.github.albfernandez.cleangpstrace;
 
-/*
- (C) Copyright 2014-2015 Alberto Fernández <infjaf@gmail.com>
-
- This file is part of cleangpstrace.
-
- Foobar is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Foobar is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
- */
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,12 +14,11 @@ public final class Record {
     private double lon;
     private NMEAFixQuality fixQuality;
     private int satellites;
-    private double altitude;
-    private double speedInKnots;
-    private double trackAngle;
+    private BigDecimal altitude;
+    private BigDecimal speedInKnots;
+    private BigDecimal trackAngle;
     private String dateAsString;
     private long time = -1;
-    private SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy HHmmss");
 
     private Record(final String theData) {
         super();
@@ -71,10 +52,12 @@ public final class Record {
             record.lon = NMEAParser.parseNmeaPosition(rec[4], rec[5]);
             record.fixQuality = NMEAFixQuality.fromCode(rec[6]);
             record.satellites = Integer.parseInt(rec[7]);
-            // hdp rec-8 - rec-9
-            record.altitude = Double.parseDouble(rec[9]);
-            // rec-11 unidades
+            // hdp rec-8
+            record.altitude = new BigDecimal(rec[9]);
+            // rec-11 units
             // rec-12 y rec13 Height of geoid (mean sea level) above WGS84 ellipsoid
+            // rec-14 DGPS
+            // rec 15 checksum
             return record;
         }
         catch (Exception e) {
@@ -85,17 +68,27 @@ public final class Record {
          *
          * $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
          *
-         * Where: GGA Global Positioning System Fix Data 123519 Fix taken at
-         * 12:35:19 UTC 4807.038,N Latitude 48 deg 07.038' N 01131.000,E
-         * Longitude 11 deg 31.000' E 1 Fix quality: 0 = invalid 1 = GPS fix
-         * (SPS) 2 = DGPS fix 3 = PPS fix 4 = Real Time Kinematic 5 = Float RTK
-         * 6 = estimated (dead reckoning) (2.3 feature) 7 = Manual input mode 8
-         * = Simulation mode 08 Number of satellites being tracked 0.9
-         * Horizontal dilution of position 545.4,M Altitude, Meters, above mean
-         * sea level 46.9,M Height of geoid (mean sea level) above WGS84
-         * ellipsoid (empty field) time in seconds since last DGPS update (empty
-         * field) DGPS station ID number47 the checksum data, always begins with
-         * *
+         * Where: GGA Global Positioning System Fix Data 
+         * 123519 Fix taken at 12:35:19 UTC 
+         * 4807.038,N Latitude 48 deg 07.038' N 
+         * 01131.000,E Longitude 11 deg 31.000' E 
+         * 1 Fix quality: 
+         *     0 = invalid 
+         *     1 = GPS fix (SPS) 
+         *     2 = DGPS fix 
+         *     3 = PPS fix 
+         *     4 = Real Time Kinematic 
+         *     5 = Float RTK 
+         *     6 = estimated (dead reckoning) (2.3 feature) 
+         *     7 = Manual input mode 
+         *     8 = Simulation mode 
+         * 08 Number of satellites being tracked 
+         * 0.9 Horizontal dilution of position 
+         * 545.4,M Altitude, Meters, above mean sea level 
+         * 46.9,M Height of geoid (mean sea level) above WGS84 ellipsoid 
+         * (empty field) time in seconds since last DGPS update 
+         * (empty field) DGPS station ID number
+         * 47 the checksum data, always begins with *
          */
 
     }
@@ -107,10 +100,11 @@ public final class Record {
             record.timeAsString = rec[1];
             record.lat = NMEAParser.parseNmeaPosition(rec[3], rec[4]);
             record.lon = NMEAParser.parseNmeaPosition(rec[5], rec[6]);
-            record.speedInKnots = Double.parseDouble(rec[7]);
-            record.trackAngle = Double.parseDouble(rec[8]);
+            record.speedInKnots = new BigDecimal(rec[7]);
+            record.trackAngle = new BigDecimal(rec[8]);
             record.dateAsString = rec[9];
-            // hpos rec-8 - rec-9
+            // rec-10 - rec-11 magnetic variation 
+            // checksum 
     
             return record;
         }
@@ -125,12 +119,16 @@ public final class Record {
          *
          * $GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A
          *
-         * Where: RMC Recommended Minimum sentence C 123519 Fix taken at
-         * 12:35:19 UTC A Status A=active or V=Void. 4807.038,N Latitude 48 deg
-         * 07.038' N 01131.000,E Longitude 11 deg 31.000' E 022.4 Speed over the
-         * ground in knots 084.4 Track angle in degrees True 230394 Date - 23rd
-         * of March 1994 003.1,W Magnetic Variation6A The checksum data, always
-         * begins with *
+         * Where: RMC Recommended Minimum sentence C 
+         * 123519 Fix taken at 12:35:19 UTC 
+         * A Status A=active or V=Void. 
+         * 4807.038,N Latitude 48 deg07.038' N 
+         * 01131.000,E Longitude 11 deg 31.000' E 
+         * 022.4 Speed over the ground in knots 
+         * 084.4 Track angle in degrees True 
+         * 230394 Date - 23rd of March 1994 
+         * 003.1,W Magnetic Variation
+         * 6A The checksum data, always begins with *
          */
 
     }
@@ -159,15 +157,15 @@ public final class Record {
         return Arrays.copyOf(this.data, this.data.length);
     }
 
-    public double getAltitude() {
+    public BigDecimal getAltitude() {
         return this.altitude;
     }
 
-    public double getSpeedInKnots() {
+    public BigDecimal getSpeedInKnots() {
         return this.speedInKnots;
     }
 
-    public double getTrackAngle() {
+    public BigDecimal getTrackAngle() {
         return this.trackAngle;
     }
 
@@ -176,11 +174,40 @@ public final class Record {
     }
 
     public String toNMEAString() {
-        StringBuilder sb = new StringBuilder();
-        for (String d : this.data) {
-            sb.append(d).append("\n");
+        
+            StringBuilder sb = new StringBuilder();
+            for (String d : this.data) {
+                sb.append(replaceDates(d)).append("\n");
+            }
+            return sb.toString();        
+        
+    }
+    private String replaceDates(String d) {
+        TimeConverter converter = TimeConverterFactory.getConveter();
+        if (converter instanceof DefaultTimeConverter) {
+            return d;
         }
-        return sb.toString();
+        String[] parts = d.split(",");
+        String fullDate = converter.convertToString(new Date(getTime()));
+        String[] partsDate = fullDate.split(" ");
+        String dateString  = partsDate[0];
+        String timeString = partsDate[1] + ".000";
+        if (d.startsWith("$GPRMC")) {
+            parts[1] = timeString;
+            parts[9] = dateString;
+            String s = String.join(",", parts);
+            String toCheck = s.substring(1, s.length() -3);
+            return "$" + toCheck + "*" + NMEAChecksum.calculateCheckSum(toCheck); 
+                    
+        }
+        else if (d.startsWith("$GPGGA")) {
+            parts[1] = timeString;
+            String s = String.join(",", parts);
+            String toCheck = s.substring(1, s.length() -3);
+            return "$" + toCheck + "*" + NMEAChecksum.calculateCheckSum(toCheck);
+        }
+        return d;
+        
     }
 
     public boolean isRMC() {
@@ -206,13 +233,7 @@ public final class Record {
     }
 
     private void calculateTime() {
-        try {
-            this.time = this.sdf.parse(
-                    this.dateAsString + " " + this.timeAsString).getTime();
-        } catch (ParseException e) {
-            this.time = 0;
-        }
-
+        this.time = TimeConverterFactory.getConveter().convertTime(this.dateAsString + " " + this.timeAsString);
     }
 
     public void join(final Record r) {

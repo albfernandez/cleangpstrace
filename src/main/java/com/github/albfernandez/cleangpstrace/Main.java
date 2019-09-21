@@ -19,7 +19,6 @@ package com.github.albfernandez.cleangpstrace;
  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +30,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 public final class Main {
@@ -40,8 +38,7 @@ public final class Main {
         throw new AssertionError("No instances of this class are allowed");
     }
 
-    public static void main(final String[] args) throws ParseException,
-            IOException {
+    public static void main(final String[] args) throws Exception {
         Options options = createOptions();
 
         CommandLineParser parser = new GnuParser();
@@ -56,7 +53,13 @@ public final class Main {
         String inputFile = line.getArgs()[0];
         boolean skipSimplify = line.hasOption("skip-simplify");
         int secondsToSplit = Integer.parseInt(secondsToSplitParam);
+        
+        int weekEpoch = Integer.parseInt(line.getOptionValue("gps-week-rollover", "-1"));
 
+        if (weekEpoch >= 0) {
+            TimeConverterFactory.setConveter(new WeekNumberRolloverTimeConverter(weekEpoch));
+        }
+        
         Trace trace = Trace.load(new File(inputFile));
 
         if (!StringUtils.isBlank(excludeAreas)) {
@@ -78,23 +81,35 @@ public final class Main {
         System.out.println("Done");
     }
 
-    private static void store(final List<Trace> traces2, final File file,
-            final String prefix) throws FileNotFoundException, IOException {
+    private static void store(final List<Trace> traces2, final File outputDirectory,
+            final String prefix) throws Exception {
         for (Trace trace : traces2) {
-            File outputFile = new File(file, prefix
-                    + trace.getTimestampAsString() + ".txt");
-            try (PrintStream ps = new PrintStream(outputFile,
-                    StandardCharsets.US_ASCII.displayName())) {
-                System.out.println("Writing " + outputFile.getName() + " ...");
-                for (Record r : trace.getRecords()) {
-                    for (String line : r.getData()) {
-                        ps.println(line);
-                    }
-                }
-
-            }
+            exportToNMEA(trace, outputDirectory, prefix);
+            exportToGPX(trace, outputDirectory, prefix);
+           
         }
 
+    }
+
+    private static void exportToGPX(Trace trace, File outputDirectory,  String prefix)  throws Exception {
+        File outputFile = new File(outputDirectory, prefix + trace.getTimestampAsString() + ".gpx");
+        GPXExporter exporter = new GPXExporter(trace);
+        exporter.export(outputFile);
+        
+    }
+
+    private static void exportToNMEA(Trace trace, File outputDirectory, String prefix) throws IOException { 
+        File outputFile = new File(outputDirectory, prefix
+                + trace.getTimestampAsString() + ".txt");
+        try (PrintStream ps = new PrintStream(outputFile,
+                StandardCharsets.US_ASCII.displayName())) {
+            System.out.println("Writing " + outputFile.getName() + " ...");
+            for (Record r : trace.getRecords()) {
+                 ps.print(r.toNMEAString());                    
+            }
+
+        }
+        
     }
 
     @SuppressWarnings("static-access")
@@ -116,6 +131,10 @@ public final class Main {
                 .withDescription(
                         " split traces after SECONDS without valid data")
                 .hasArg().withArgName("SECONDS").create());
+        options.addOption(OptionBuilder
+                .withLongOpt("gps-week-rollover")
+                .withDescription("GPS week rollover period we're in (-1: current). Try to fix data and 'move' to correct time ")
+                .hasArg().withArgName("EPOCH").create());                
         return options;
     }
 

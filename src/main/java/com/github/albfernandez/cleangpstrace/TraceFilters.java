@@ -1,5 +1,6 @@
 package com.github.albfernandez.cleangpstrace;
 
+import java.math.BigDecimal;
 /*
  (C) Copyright 2014-2015 Alberto Fernández <infjaf@gmail.com>
 
@@ -57,7 +58,8 @@ public final class TraceFilters {
         double lastDirection = Integer.MAX_VALUE;
 
         for (Record r : trace.getRecords()) {
-            double n = r.getTrackAngle();
+            BigDecimal angle = r.getTrackAngle();
+            double n = (angle == null ? 0.0 : angle.doubleValue());
             double diff = Math.abs(n - lastDirection);
             if (diff > margin) {
                 lastDirection = n;
