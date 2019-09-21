@@ -53,7 +53,7 @@ public class WeekNumberRolloverTimeConverter implements TimeConverter {
         while (limits[currentEpoch+1] < temporal) {
             currentEpoch++;
         }
-        return currentEpoch++;
+        return currentEpoch;
         
     }
 
