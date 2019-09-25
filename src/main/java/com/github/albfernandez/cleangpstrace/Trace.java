@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -137,9 +138,13 @@ public final class Trace {
         if (this.records.isEmpty()) {
             return "";
         }
-        long time = this.records.get(0).getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        return sdf.format(new Date(time));
+        Calendar c = Calendar.getInstance();
+        long time = this.records.get(0).getTime();
+        c.setTimeInMillis(time);
+        Date definitivo = new Date(time + c.get(Calendar.ZONE_OFFSET) + c.get(Calendar.DST_OFFSET));
+        return sdf.format(definitivo);
+        
 
     }
 
