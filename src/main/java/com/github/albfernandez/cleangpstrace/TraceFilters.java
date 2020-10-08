@@ -34,7 +34,7 @@ public final class TraceFilters {
     public static List<Trace> splitTrace(final Trace trace,
             final int secondsToSplit) {
         List<Trace> list = new ArrayList<>();
-        long millisToSplit = secondsToSplit * 1000;
+        long millisToSplit = secondsToSplit * 1000L;
         long lastTime = 0;
         Trace currentTrace = new Trace();
         for (Record r : trace.getRecords()) {
