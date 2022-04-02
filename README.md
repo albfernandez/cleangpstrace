@@ -12,7 +12,7 @@ It also optionally cleans the data, removing points in defined areas or simplify
 ## Options
 
     --exclude-areas shapefile
-Indicates de shapefile that contains areas which should be removed from source. (WGS84)
+Indicates the shapefile that contains areas which should be removed from source. (WGS84)
 
     --prefix prefix
 Prefix to use on the output files
@@ -24,4 +24,13 @@ Directory where the output files will be stored
 Number of seconds without data needed to start a new file
 
     --skip-simplify
-Skip the simplication (reduction of points) in the trace
+Skip the simplification (reduction of points) in the trace
+
+    --gps-week-rollover
+Set the "gps week epoch"
+ - -1 autodectect
+ - 0 from 1980-01-06 to 1999-08-21
+ - 1 from 1999-08-22 to 2019-04-06
+ - 2 from 2019-04-07 to 2039-04-06
+    
+    
