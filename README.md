@@ -1,10 +1,10 @@
-#cleangpstrace
+# cleangpstrace
 
 Takes a file with nmea data and split it in diferent files attending times where the receiver where off.
 It also optionally cleans the data, removing points in defined areas or simplifying points on a route.
 
 
-#usage
+# usage
 
 
     java -jar cleangpstrace-1.0-jar-with-dependencies.jar source_nmea.txt
