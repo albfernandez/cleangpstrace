@@ -2,6 +2,7 @@ package com.github.albfernandez.cleangpstrace;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class WeekNumberRolloverTimeConverter implements TimeConverter {
@@ -22,18 +23,14 @@ public class WeekNumberRolloverTimeConverter implements TimeConverter {
         try {
             limits = new long[]{
                   simple.parse("1980-01-06 00:00:00").getTime(),
-                  simple.parse("1999-07-21 23:59:47").getTime(), // strange, but gpsbabel seems to use that
+//                  simple.parse("1999-07-21 23:59:47").getTime(), // strange, but gpsbabel seems to use that
+                  simple.parse("1999-08-21 23:59:47").getTime(),
                   simple.parse("2019-04-06 23:59:42").getTime(),
                   simple.parse("2039-04-06 23:59:42").getTime()
             };            
         } 
-        catch (ParseException ignore) {
-            limits = new long[] {
-                    315961200000L,
-                    932594387000L,
-                    1554587982000L,
-                    2185739982000L
-            };
+        catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -47,6 +44,17 @@ public class WeekNumberRolloverTimeConverter implements TimeConverter {
         
         long diff = temporal - limits[dateEpoch];
         temporal = limits[ep] + diff;
+        
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(temporal);
+        int mes = c.get(Calendar.MONTH);
+        if (mes == Calendar.MARCH) {
+        	temporal += 1000*3600;
+        }
+        else {
+        	temporal -= 1000*3600;
+        }
         
 
         return temporal;
