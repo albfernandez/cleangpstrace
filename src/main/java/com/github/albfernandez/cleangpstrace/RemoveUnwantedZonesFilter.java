@@ -26,7 +26,6 @@ import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
@@ -51,8 +50,7 @@ public final class RemoveUnwantedZonesFilter {
             this.store = FileDataStoreFinder.getDataStore(new File(
                     this.cleanZones));
             this.featureSource = this.store.getFeatureSource();
-            this.filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools
-                    .getDefaultHints());
+            this.filterFactory = CommonFactoryFinder.getFilterFactory2();
             this.geometryPropertyName = this.featureSource.getSchema()
                     .getGeometryDescriptor().getLocalName();
             this.targetCRS = this.featureSource.getSchema()
