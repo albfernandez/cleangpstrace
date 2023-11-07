@@ -45,7 +45,7 @@ public enum NMEAFixQuality {
     }
 
     public static NMEAFixQuality fromCode(final String code) {
-        if (code == null || !code.matches("^[0-9]+$")) {
+        if (code == null || !code.matches("^\\d+$")) {
             return null;
         }
         return fromCode(Integer.parseInt(code));

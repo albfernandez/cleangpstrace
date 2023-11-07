@@ -45,20 +45,20 @@ public final class Record {
 
     private static Record createGPGGARecord(final String line) {
         try {
-            Record record = new Record(line);
+            Record newRecord = new Record(line);
             String[] rec = line.split(",");
-            record.timeAsString = rec[1];
-            record.lat = NMEAParser.parseNmeaPosition(rec[2], rec[3]);
-            record.lon = NMEAParser.parseNmeaPosition(rec[4], rec[5]);
-            record.fixQuality = NMEAFixQuality.fromCode(rec[6]);
-            record.satellites = Integer.parseInt(rec[7]);
+            newRecord.timeAsString = rec[1];
+            newRecord.lat = NMEAParser.parseNmeaPosition(rec[2], rec[3]);
+            newRecord.lon = NMEAParser.parseNmeaPosition(rec[4], rec[5]);
+            newRecord.fixQuality = NMEAFixQuality.fromCode(rec[6]);
+            newRecord.satellites = Integer.parseInt(rec[7]);
             // hdp rec-8
-            record.altitude = new BigDecimal(rec[9]);
+            newRecord.altitude = new BigDecimal(rec[9]);
             // rec-11 units
             // rec-12 y rec13 Height of geoid (mean sea level) above WGS84 ellipsoid
             // rec-14 DGPS
             // rec 15 checksum
-            return record;
+            return newRecord;
         }
         catch (Exception e) {
             return null;
@@ -95,18 +95,18 @@ public final class Record {
 
     private static Record createGPRMCRecord(final String line) {
         try {
-            Record record = new Record(line);
+            Record newRecord = new Record(line);
             String[] rec = line.split(",");
-            record.timeAsString = rec[1];
-            record.lat = NMEAParser.parseNmeaPosition(rec[3], rec[4]);
-            record.lon = NMEAParser.parseNmeaPosition(rec[5], rec[6]);
-            record.speedInKnots = new BigDecimal(rec[7]);
-            record.trackAngle = new BigDecimal(rec[8]);
-            record.dateAsString = rec[9];
+            newRecord.timeAsString = rec[1];
+            newRecord.lat = NMEAParser.parseNmeaPosition(rec[3], rec[4]);
+            newRecord.lon = NMEAParser.parseNmeaPosition(rec[5], rec[6]);
+            newRecord.speedInKnots = new BigDecimal(rec[7]);
+            newRecord.trackAngle = new BigDecimal(rec[8]);
+            newRecord.dateAsString = rec[9];
             // rec-10 - rec-11 magnetic variation 
             // checksum 
     
-            return record;
+            return newRecord;
         }
         catch (Exception e) {
             return null;

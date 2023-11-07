@@ -62,16 +62,16 @@ public final class RemoveUnwantedZonesFilter {
 
     public Trace cleanTrace(final Trace trace) {
         Trace newTrace = new Trace();
-        for (Record record : trace.getRecords()) {
-            if (isValidRecord(record)) {
-                newTrace.addRecord(record);
+        for (Record theRecord : trace.getRecords()) {
+            if (isValidRecord(theRecord)) {
+                newTrace.addRecord(theRecord);
             }
         }
         return newTrace;
     }
 
-    private boolean isValidRecord(final Record record) {
-        return cuentaIncidencias(record.getLat(), record.getLon()) == 0;
+    private boolean isValidRecord(final Record theRecord) {
+        return cuentaIncidencias(theRecord.getLat(), theRecord.getLon()) == 0;
     }
 
     private long cuentaIncidencias(final double latitud, final double longitud) {

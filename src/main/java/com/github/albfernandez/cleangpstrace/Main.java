@@ -67,7 +67,7 @@ public final class Main {
         }
 
         List<Trace> traces = TraceFilters.splitTrace(trace, secondsToSplit);
-        List<Trace> traces2 = new ArrayList<Trace>();
+        List<Trace> traces2 = new ArrayList<>();
         if (skipSimplify) {
             traces2.addAll(traces);
         } else {

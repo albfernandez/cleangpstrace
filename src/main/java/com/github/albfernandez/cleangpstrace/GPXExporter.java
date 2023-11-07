@@ -1,11 +1,13 @@
 package com.github.albfernandez.cleangpstrace;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -21,7 +23,7 @@ import org.w3c.dom.Element;
 
 public final class GPXExporter {
     
-    private String ENCODING = "UTF-8";
+
     private Trace trace = null;
     private SimpleDateFormat sdf;
     
@@ -74,7 +76,7 @@ public final class GPXExporter {
         Element metadata = createMetadataNode(gpx);
         gpx.insertBefore(metadata, track);
         String result = toXML(doc);
-        Files.write(output.toPath(), result.getBytes(ENCODING));
+        Files.write(output.toPath(), result.getBytes(StandardCharsets.UTF_8));
     }
     private Element createMetadataNode(Element gpx) {
         Document doc = gpx.getOwnerDocument();
@@ -96,10 +98,13 @@ public final class GPXExporter {
     }
     private String toXML(Document xmlDoc) throws TransformerException  {
         DOMSource domSource = new DOMSource(xmlDoc);
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
+        TransformerFactory factory = TransformerFactory.newInstance();
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        Transformer transformer = factory.newTransformer();
+
         transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        transformer.setOutputProperty(OutputKeys.ENCODING, ENCODING);
+        transformer.setOutputProperty(OutputKeys.ENCODING, StandardCharsets.UTF_8.name());
 
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         // Unless a width is set, there will be only line breaks but no

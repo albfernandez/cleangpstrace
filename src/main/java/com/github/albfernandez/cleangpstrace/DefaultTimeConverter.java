@@ -11,12 +11,11 @@ public class DefaultTimeConverter implements TimeConverter {
     public DefaultTimeConverter() {
         super();
     }
-
+    
     @Override
     public long convertTime(String date) {
         try {
-            long temporal = this.sdf.parse(date).getTime();
-            return temporal;
+            return this.sdf.parse(date).getTime();
         }
         catch (ParseException pe) {
             return 0;
