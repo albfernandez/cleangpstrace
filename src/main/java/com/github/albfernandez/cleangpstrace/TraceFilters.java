@@ -31,8 +31,7 @@ public final class TraceFilters {
         return trace;
     }
 
-    public static List<Trace> splitTrace(final Trace trace,
-            final int secondsToSplit) {
+    public static List<Trace> splitTrace(final Trace trace, final int secondsToSplit) {
         List<Trace> list = new ArrayList<>();
         long millisToSplit = secondsToSplit * 1000L;
         long lastTime = 0;
@@ -45,11 +44,41 @@ public final class TraceFilters {
             currentTrace.addRecord(r);
             lastTime = r.getTime();
         }
-
-        return list;
+        
+        return cleanShortTraces(list);
     }
 
-    public static Trace simplify(final Trace trace) {
+    private static List<Trace> cleanShortTraces(List<Trace> list) {
+		List<Trace> newList = new ArrayList<>();
+		for (Trace t: list) {
+			if (isValid(t)) {
+				newList.add(t);
+			}
+		}
+		return newList;
+		
+	}
+
+	private static boolean isValid(Trace t) {
+		if (t.getRecords().size() >= 600) {
+			return true;
+		}
+		double minLon = Double.POSITIVE_INFINITY;
+		double maxLon = Double.NEGATIVE_INFINITY;
+		double minLat = Double.POSITIVE_INFINITY;
+		double maxLat = Double.NEGATIVE_INFINITY;
+		for (Record r: t.getRecords()) {
+			maxLat = Math.max(maxLat, r.getLat());
+			minLat = Math.min(minLat, r.getLat());
+			maxLon = Math.max(maxLon, r.getLon());
+			minLon = Math.min(minLon, r.getLon());
+		}
+		System.out.println (maxLat + " " + minLat + " " + maxLon + " " + minLon + 
+				" " + (maxLat - minLat) + " " + (maxLon - minLon) );
+		return maxLat - minLat > 0.001 || maxLon - minLon > 0.001;
+	}
+
+	public static Trace simplify(final Trace trace) {
         return simplify(trace, 1);
     }
 

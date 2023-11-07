@@ -47,7 +47,7 @@ public final class Main {
         String excludeAreas = line.getOptionValue("exclude-areas");
         String prefix = Objects.toString(line.getOptionValue("prefix"), "s");
         String outputDir = Objects.toString(line.getOptionValue("output-dir"), ".");
-        String secondsToSplitParam = Objects.toString(line.getOptionValue("seconds-to-split"), "10");
+        String secondsToSplitParam = Objects.toString(line.getOptionValue("seconds-to-split"), "60");
         String inputFile = line.getArgs()[0];
         boolean skipSimplify = line.hasOption("skip-simplify");
         int secondsToSplit = Integer.parseInt(secondsToSplitParam);
@@ -61,8 +61,7 @@ public final class Main {
         Trace trace = Trace.load(new File(inputFile));
 
         if (!StringUtils.isBlank(excludeAreas)) {
-            RemoveUnwantedZonesFilter remove = new RemoveUnwantedZonesFilter(
-                    excludeAreas);
+            RemoveUnwantedZonesFilter remove = new RemoveUnwantedZonesFilter(excludeAreas);
             trace = remove.cleanTrace(trace);
         }
 
@@ -84,7 +83,6 @@ public final class Main {
         for (Trace trace : traces2) {
             exportToNMEA(trace, outputDirectory, prefix);
             exportToGPX(trace, outputDirectory, prefix);
-           
         }
 
     }
