@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -44,12 +45,9 @@ public final class Main {
         CommandLineParser parser = new GnuParser();
         CommandLine line = parser.parse(options, args);
         String excludeAreas = line.getOptionValue("exclude-areas");
-        String prefix = StringUtils.defaultString(
-                line.getOptionValue("prefix"), "s");
-        String outputDir = StringUtils.defaultString(
-                line.getOptionValue("output-dir"), ".");
-        String secondsToSplitParam = StringUtils.defaultString(
-                line.getOptionValue("seconds-to-split"), "10");
+        String prefix = Objects.toString(line.getOptionValue("prefix"), "s");
+        String outputDir = Objects.toString(line.getOptionValue("output-dir"), ".");
+        String secondsToSplitParam = Objects.toString(line.getOptionValue("seconds-to-split"), "10");
         String inputFile = line.getArgs()[0];
         boolean skipSimplify = line.hasOption("skip-simplify");
         int secondsToSplit = Integer.parseInt(secondsToSplitParam);
