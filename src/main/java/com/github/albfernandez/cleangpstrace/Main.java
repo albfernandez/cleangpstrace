@@ -20,6 +20,7 @@ package com.github.albfernandez.cleangpstrace;
  */
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public final class Main {
         String secondsToSplitParam = Objects.toString(line.getOptionValue("seconds-to-split"), "60");
         String inputFile = line.getArgs()[0];
         boolean skipSimplify = line.hasOption("skip-simplify");
+        boolean compress = line.hasOption("compress");
         int secondsToSplit = Integer.parseInt(secondsToSplitParam);
         
         int weekEpoch = Integer.parseInt(line.getOptionValue("gps-week-rollover", "-1"));
@@ -74,45 +76,55 @@ public final class Main {
                 traces2.add(TraceFilters.simplify(iTrace));
             }
         }
-        store(traces2, new File(outputDir), prefix);
+        store(traces2, new File(outputDir), prefix, compress);
         System.out.println("Done");
     }
 
-    private static void store(final List<Trace> traces2, final File outputDirectory,
-            final String prefix) throws Exception {
+    private static void store(final List<Trace> traces2, final File outputDirectory, final String prefix, boolean compress) throws Exception {
         for (Trace trace : traces2) {
-            exportToNMEA(trace, outputDirectory, prefix);
-            exportToGPX(trace, outputDirectory, prefix);
+            exportToNMEA(trace, outputDirectory, prefix, compress);
+            exportToGPX(trace, outputDirectory, prefix, compress);
         }
 
     }
 
-    private static void exportToGPX(Trace trace, File outputDirectory,  String prefix)  throws Exception {
-        File outputFile = new File(outputDirectory, prefix + trace.getTimestampAsString() + ".gpx");
+    private static void exportToGPX(Trace trace, File outputDirectory,  String prefix, boolean compress)  throws Exception {
+    	String extension = ".gpx";
+    	if (compress) {
+    		extension += ".gz";
+    	}
+    		
+        File outputFile = new File(outputDirectory, prefix + trace.getTimestampAsString() + extension);
         GPXExporter exporter = new GPXExporter(trace);
-        exporter.export(outputFile);
+        exporter.export(outputFile, compress);
         
     }
 
-    private static void exportToNMEA(Trace trace, File outputDirectory, String prefix) throws IOException { 
-        File outputFile = new File(outputDirectory, prefix
-                + trace.getTimestampAsString() + ".txt");
-        try (PrintStream ps = new PrintStream(outputFile,
-                StandardCharsets.US_ASCII.displayName())) {
-            System.out.println("Writing " + outputFile.getName() + " ...");
-            for (Record r : trace.getRecords()) {
-                 ps.print(r.toNMEAString());                    
-            }
-
-        }
-        
+    private static void exportToNMEA(Trace trace, File outputDirectory, String prefix, boolean compress) throws IOException { 
+    	String extension = ".txt";
+    	if (compress) {
+    		extension += ".gz";
+    	}
+        File outputFile = new File(outputDirectory, prefix + trace.getTimestampAsString() + extension);
+        System.out.println("Writing " + outputFile.getName() + " ...");
+        try(OutputStream os = FileUtils.createOutputStream(outputFile, compress)) {
+	        try (PrintStream ps = new PrintStream(os, false, StandardCharsets.US_ASCII)) {
+	            for (Record r : trace.getRecords()) {
+	                 ps.print(r.toNMEAString());                    
+	            }
+	        }
+        }        
     }
 
-    @SuppressWarnings("static-access")
+
+
+	@SuppressWarnings("static-access")
     private static Options createOptions() {
         Options options = new Options();
         options.addOption(OptionBuilder.withLongOpt("skip-simplify")
                 .withDescription("Skip simplification of traces").create());
+        options.addOption(OptionBuilder.withLongOpt("compress")
+        		.withDescription("Compress output files").create());
         options.addOption(OptionBuilder.withLongOpt("exclude-areas")
                 .withDescription("use FILE (shapefile) to exclude areas")
                 .hasArg().withArgName("FILE").create());

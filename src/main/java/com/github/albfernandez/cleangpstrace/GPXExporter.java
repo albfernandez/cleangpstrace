@@ -1,6 +1,7 @@
 package com.github.albfernandez.cleangpstrace;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
@@ -33,12 +34,13 @@ public final class GPXExporter {
     private double minLon = 5000;
     
     public GPXExporter(Trace trace) {
+    	super();
         this.trace = trace;
         this.sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         sdf.setTimeZone(TimeZone.getTimeZone("CET"));
     }
     
-    public void export(File output) throws Exception   {
+    public void export(File output, boolean compress) throws Exception   {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         Document doc = dbf.newDocumentBuilder().newDocument(); 
         Element gpx = doc.createElement("gpx");        
@@ -75,8 +77,9 @@ public final class GPXExporter {
         }
         Element metadata = createMetadataNode(gpx);
         gpx.insertBefore(metadata, track);
-        String result = toXML(doc);
-        Files.write(output.toPath(), result.getBytes(StandardCharsets.UTF_8));
+        try (OutputStream os = FileUtils.createOutputStream(output, compress)) {
+        	toXML(doc, os);
+        }
     }
     private Element createMetadataNode(Element gpx) {
         Document doc = gpx.getOwnerDocument();
@@ -96,7 +99,7 @@ public final class GPXExporter {
     private String fomatDate(Date date) {
         return sdf.format(date);
     }
-    private String toXML(Document xmlDoc) throws TransformerException  {
+    private void toXML(Document xmlDoc, OutputStream os) throws TransformerException  {
         DOMSource domSource = new DOMSource(xmlDoc);
         TransformerFactory factory = TransformerFactory.newInstance();
         factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -114,10 +117,7 @@ public final class GPXExporter {
         transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
-        java.io.StringWriter sw = new java.io.StringWriter();
-        StreamResult sr = new StreamResult(sw);
-        transformer.transform(domSource, sr);
-        return sw.toString();
+        transformer.transform(domSource, new StreamResult(os));
     }
 
 }
